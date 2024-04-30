@@ -8,7 +8,7 @@ import (
 )
 
 type (
-	Sourcer interface {
+	Reader interface {
 		FetchMessage(ctx context.Context) (kafka.Message, error)
 		CommitMessages(ctx context.Context, msgs ...kafka.Message) error
 	}
@@ -18,7 +18,7 @@ type (
 	}
 
 	Move1To1 struct {
-		source      Sourcer
+		source      Reader
 		destination Writer
 
 		beforeMoveToDestHandler func(msg kafka.Message) (kafka.Message, error)
@@ -31,7 +31,7 @@ var (
 	}
 )
 
-func New1To1Mover(source Sourcer, dest Writer) (*Move1To1, error) {
+func New1To1Mover(source Reader, dest Writer) (*Move1To1, error) {
 	return &Move1To1{
 		source:                  source,
 		destination:             dest,
